@@ -1,0 +1,34 @@
+# /etc/mysql/mariadb.conf.d/50-server.cnf
+
+[server]
+skip-host-cache
+skip-name-resolve
+
+[mysqld]
+datadir = /var/lib/mysql
+socket = /var/run/mysqld/mysqld.sock
+secure-file-priv = /var/lib/mysql-files
+
+# Temel güvenlik ve performans ayarları
+max_connections = 200
+max_allowed_packet = 16M
+bind-address = 0.0.0.0
+
+# Character set
+character-set-server = utf8mb4
+collation-server = utf8mb4_general_ci
+
+# Logging
+general_log = 0
+log_error = /var/log/mysql/error.log
+
+# Important: Uncomment this if you want to use InnoDB tables
+# innodb_file_per_table = 1
+# innodb_buffer_pool_size = 128M
+
+# MariaDB 10.2 introduced a query cache with an 'ON' flag by default. 
+# Do not set query_cache_size to 0, to turn it off. 
+# Query cache is deprecated as of MariaDB 10.5 and will be removed in a future release.
+# query_cache_size = 16M
+#query_cache_type = 1
+#query_cache_limit = 2M

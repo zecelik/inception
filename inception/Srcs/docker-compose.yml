@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "443:443"
+    environment:
+      - DOMAIN_NAME=fcelik.42.fr
+    networks:
+      - mynetwork
+
+  wordpress:
+    build:
+      context: ./wordpress
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - wp-db:/var/lib/mysql
+      - wp-content:/var/www/html/wp-content
+    environment:
+      - WORDPRESS_DB_HOST=mariadb
+      - WORDPRESS_DB_NAME=wordpress
+      - WORDPRESS_DB_USER=root
+      - WORDPRESS_DB_PASSWORD=123
+    networks:
+      - mynetwork
+
+  mariadb:
+    build:
+      context: ./mariadb
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - wp-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+    networks:
+      - mynetwork
+
+volumes:
+  wp-db:
+  wp-content:
+
+networks:
+  mynetwork:
+    driver: bridge
