@@ -7,8 +7,8 @@ DOCKER_COMPOSE := docker-compose -f srcs/docker-compose.yml
 all: setup build
 
 setup:
-	@mkdir -p /home/ahkalama/data/wordpress
-	@mkdir -p /home/ahkalama/data/mariadb
+	@mkdir -p /home/fcelik/data/wordpress
+	@mkdir -p /home/fcelik/data/mariadb
 
 build:
 	$(DOCKER_COMPOSE) up --build
@@ -24,7 +24,7 @@ clean:
 
 fclean: clean
 	docker system prune -af
-	rm -rf /home/ahkalama/data
+	rm -rf /home/fcelik/data
 
 re: fclean all
 
