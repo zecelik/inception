@@ -1,16 +1,32 @@
+# Makefile
+
+# Variables
+DOCKER_COMPOSE := docker-compose -f srcs/docker-compose.yml
+
+# Targets
+all: setup build
+
+setup:
+	@mkdir -p /home/ahkalama/data/wordpress
+	@mkdir -p /home/ahkalama/data/mariadb
+
 build:
-    docker-compose build
+	$(DOCKER_COMPOSE) up --build
 
-up:
-    docker-compose up -d
+start:
+	$(DOCKER_COMPOSE) start
 
-down:
-    docker-compose down
+stop:
+	$(DOCKER_COMPOSE) stop
 
-restart:
-    docker-compose restart
+clean:
+	$(DOCKER_COMPOSE) down --volumes
 
-logs:
-    docker-compose logs -f
+fclean: clean
+	docker system prune -af
+	rm -rf /home/ahkalama/data
 
-.PHONY: build up down restart logs
+re: fclean all
+
+.PHONY: all setup build start stop clean fclean re
+
