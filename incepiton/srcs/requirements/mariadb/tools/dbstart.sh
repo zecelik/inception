@@ -1,13 +1,28 @@
 #!/bin/bash
 
+# MariaDB servisini başlat
+echo "Starting MariaDB service..."
 service mariadb start
 
-sleep 3
+# Servisin tam olarak başlaması için bekleyin
+sleep 5
 
-mariadb -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE_NAME;"
-mariadb -e "CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
-mariadb -e "GRANT ALL PRIVILEGES ON $MYSQL_DATABASE_NAME.* TO '$MYSQL_USER'@'%';"
-mariadb -e "FLUSH PRIVILEGES;"
-mariadb -e "SHUTDOWN;"
+# Veritabanı ve kullanıcı bilgilerini ortam değişkenlerinden al
+DB_NAME="${MYSQL_DATABASE_NAME:-default_db}"
+DB_USER="${MYSQL_USER:-default_user}"
+DB_PASS="${MYSQL_PASSWORD:-default_password}"
 
+# MariaDB komutlarını çalıştırın
+echo "Creating database, user, and granting privileges..."
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS \`$DB_NAME\`;"
+mysql -u root -e "CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';"
+mysql -u root -e "GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'%';"
+mysql -u root -e "FLUSH PRIVILEGES;"
+
+# MariaDB servisini kapat
+echo "Shutting down MariaDB..."
+mysqladmin -u root shutdown
+
+# Komutları çalıştırmak için varsayılan komutu çalıştır
 exec "$@"
+

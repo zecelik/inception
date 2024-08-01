@@ -1,22 +1,53 @@
-server { 
-	listen 443 ssl;
-	listen [::]:443 ssl;
-	server_name fcelik.42.fr;
-	ssl_certificate /etc/ssl/certs/inception.crt; 
-	ssl_certificate_key /etc/ssl/private/inception.key; 
-	ssl_protocols TLSv1.3;
-	root /var/www/html;
-	index index.php;
-        location / {
-                try_files $uri $uri/ =404;
-        }
-	location ~ \.php$ { 
-		include snippets/fastcgi-php.conf;
-		fastcgi_pass wordpress:9000;
-		proxy_connect_timeout 300s; 
-		proxy_send_timeout 300s; 
-		proxy_read_timeout 300s; 
-		fastcgi_send_timeout 300s; 
-		fastcgi_read_timeout 300s; 
-	} 
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name fcelik.42.fr;
+
+    # SSL sertifika ve anahtar dosyalarının yolları
+    ssl_certificate /etc/ssl/certs/inception.crt;
+    ssl_certificate_key /etc/ssl/private/inception.key;
+
+    # SSL protokollerinin ve şifreleme algoritmalarının ayarları
+    ssl_protocols TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384';
+
+    # Güvenli SSL yapılandırmaları
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+    # Web kök dizini ve varsayılan ana sayfa
+    root /var/www/html;
+    index index.php index.html;
+
+    # Ana sayfa
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # PHP dosyalarını FastCGI ile işleme
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass wordpress:9000;
+
+        # Timeout ayarları
+        fastcgi_read_timeout 300s;
+        fastcgi_send_timeout 300s;
+
+        # FastCGI parametreleri
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    # Hata sayfaları
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+
+    # İstemci tarafı sıkıştırma
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_disable "MSIE [1-6]\.";
 }
+

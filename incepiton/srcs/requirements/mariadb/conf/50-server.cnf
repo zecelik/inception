@@ -1,11 +1,55 @@
 [mysqld]
 
-user                    = mysql
-socket                  = /run/mysqld/mysqld.sock
-port                    = 3306
-basedir                 = /usr
-datadir                 = /var/lib/mysql
-log_error               = /var/log/mysql/error.log
-expire_logs_days        = 10
-character-set-server    = utf8mb4
-bind-address            = 0.0.0.0
+# MariaDB kullanıcı adı
+user = mysql
+
+# MySQL soket dosyasının yeri
+socket = /run/mysqld/mysqld.sock
+
+# MariaDB'nin dinleyeceği port numarası
+port = 3306
+
+# MariaDB'nin kurulu olduğu temel dizin
+basedir = /usr
+
+# Veritabanı dosyalarının bulunduğu dizin
+datadir = /var/lib/mysql
+
+# Hata log dosyasının yeri
+log_error = /var/log/mysql/error.log
+
+# Log dosyalarının ne kadar süre saklanacağını belirler
+expire_logs_days = 10
+
+# Sunucu karakter seti
+character-set-server = utf8mb4
+
+# Sunucunun dinleyeceği IP adresi
+bind-address = 0.0.0.0
+
+# Maksimum bağlantı sayısı
+max_connections = 100
+
+# Veritabanı tablolarının saklanacağı dizin
+tmpdir = /tmp
+
+# Yedekleme ve veritabanı performansı için önemli bir parametre
+innodb_buffer_pool_size = 256M
+
+# Loglama ve performans izleme için ayar
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/slow.log
+long_query_time = 2
+
+# Sunucunun destekleyeceği maksimum paket boyutu
+max_allowed_packet = 16M
+
+# Veritabanı erişim izinleri
+skip-name-resolve
+
+# Arka planda çalışan işlerin güncellenme süresi
+innodb_flush_log_at_trx_commit = 1
+
+# InnoDB tampon havuzu boyutu
+innodb_log_file_size = 50M
+
